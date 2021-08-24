@@ -11,7 +11,11 @@ module.exports = {
       },
       heigth:{
         '54px':'54px'
-      }
+      },
+      backgroundColor: (theme) => ({
+        ...theme('colors'),
+        blueBtn: '#0095f6'
+      })
     },
   },
   variants: {
