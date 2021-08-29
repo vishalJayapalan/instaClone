@@ -24,7 +24,7 @@ const createUserInDb = async (userName, email, password) => {
 const getCurrentUserFromDb = async userId => {
   try {
     const currentUser = await pool.query(
-      `SELECT id, full_name,email FROM users WHERE id = $1`,
+      `SELECT id, user_name,email FROM users WHERE id = $1`,
       [userId]
     )
     return { currentUser }

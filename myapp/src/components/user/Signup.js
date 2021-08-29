@@ -44,7 +44,7 @@ export default function Signup () {
   }
 
   return isLoggedIn ? (
-    <Redirect to='/' />
+    <Redirect to='/home' />
   ) : (
     <div>
       <div className='flex items-center h-screen text-base'>

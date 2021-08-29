@@ -5,24 +5,7 @@ import { BASE_URL } from '../../config'
 export default function AddPostModal({ setShowAddPostModal }) {
   const [image, setImage] = useState();
   const [caption, setCaption] = useState('');
-  const [imageUrl, setImageUrl] = useState('')
-  const getPosts = async () => {
-    try {
-      const result = await Axios({
-        method: 'GET',
-        url: '/api/image/insta-posts/image-1630172393385-51738551.jpg',
-        header: {
-          'Content-Type': 'multipart/form-data'
-        }
-      })
-      console.log(result.data)
-      setImageUrl(result.data)
-    } catch (err) {
-      console.log(err)
-    }
-  }
-
-  useEffect(() => getPosts(), [])
+  
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -32,13 +15,13 @@ export default function AddPostModal({ setShowAddPostModal }) {
     try {
       const result = await Axios({
         method: 'POST',
-        url: '/api/image/upload',
+        url: '/api/feed/upload',
         header: {
           'Content-Type': 'multipart/form-data'
         },
         data
       })
-      console.log(result)
+      setShowAddPostModal(false);
     } catch (err) {
       console.log(err)
     }
@@ -77,7 +60,6 @@ export default function AddPostModal({ setShowAddPostModal }) {
           </div>
         </form>
       </div>
-      {imageUrl && <img src={imageUrl} />}
     </div>
   )
 }

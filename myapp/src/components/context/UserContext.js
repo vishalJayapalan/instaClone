@@ -22,7 +22,7 @@ export const UserContextProvider = props => {
   }
 
   async function getUser () {
-    const data = await request('api/user/getUser', 'GET')
+    const data = await request('api/user/get-user', 'GET')
     console.log(data)
     if (data.ok) {
       const jsonData = await data.json()

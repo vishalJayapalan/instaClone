@@ -6,10 +6,12 @@ const port = 5000;
 app.use(express.json())
 app.use(cors())
 
-const imageRoutes = require('./image/router');
 const userRoutes = require('./users/router');
+const feedRoutes = require('./feeds/router');
+const commentRoutes = require('./comments/router');
 
-app.use('/api/image', imageRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/feed', feedRoutes);
+app.use('/api/comment', commentRoutes);
 
 app.listen(port, () => console.log('listening on port: ', port))

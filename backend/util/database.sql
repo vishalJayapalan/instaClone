@@ -17,7 +17,9 @@ CREATE TABLE IF NOT EXISTS feeds (
   creation_time TIMESTAMP default current_timestamp,
   caption VARCHAR(255),
   user_id BIGINT NOT NULL,
-  post_photo_url VARCHAR(255)
+  post_photo_url VARCHAR(255),
+  like_count BIGINT default 0,
+  comment_count BIGINT default 0
 );
 
 -- COMMENTS -- 
@@ -26,8 +28,8 @@ CREATE TABLE IF NOT EXISTS comments (
   id BIGSERIAL PRIMARY KEY,
   creation_time TIMESTAMP default current_timestamp,
   user_id BIGINT NOT NULL,
-  post_id BIGINT NOT NULL,
-  comment VARCHAR(255) NOT NULL
+  feed_id BIGINT NOT NULL,
+  comment VARCHAR(255)
 );
 
 -- LIKES

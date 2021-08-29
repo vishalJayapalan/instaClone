@@ -32,7 +32,7 @@ const registerUser = async (req, res) => {
       )
       return res
         .status(201)
-        .cookie('x-auth-token', accessToken, { maxAge: 3600000 })
+        .cookie('x-auth-token', accessToken, { maxAge: 604800000 })
         .json(newUser)
     }
     return res.status(400).json({ msg: 'Email already exists' })
@@ -64,7 +64,7 @@ const loginUser = async (req, res) => {
     )
     return res
       .status(200)
-      .cookie('x-auth-token', accessToken, { maxAge: 3600000 })
+      .cookie('x-auth-token', accessToken, { maxAge: 604800000 })
       .json(user.rows)
   } catch (err) {
     return res.status(500).json({ msg: 'Some error occured' })

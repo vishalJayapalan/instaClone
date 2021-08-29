@@ -1,27 +1,26 @@
-import React, { useState, useEffect } from 'react'
+import React,{useState} from 'react'
 import Comment from '../Comment'
 import AddComment from '../Comment/AddComment'
 import Axios from 'axios'
 
 export default function Feed({ feed, user }) {
-  const [imageUrl, setImageUrl] = useState('')
-  const getPosts = async () => {
+const [comments,setComments] = useState({});
+const [showComments,setShowComments] = useState(false);
+
+  const getComments = async () => {
     try {
       const result = await Axios({
         method: 'GET',
-        url: '/api/image/insta-posts/image-1630172393385-51738551.jpg',
+        url: `/api/comment/get-comments/${feed.id}`,
         header: {
-          'Content-Type': 'multipart/form-data'
+          'Content-Type': 'application/json'
         }
       })
-      console.log(result)
-      setImageUrl(result)
+      setComments(result.data);
     } catch (err) {
       console.log(err)
     }
   }
-
-  useEffect(() => getPosts(), [])
 
   return (
     <div className="mt-5 border rounded-sm w-full">
@@ -31,18 +30,18 @@ export default function Feed({ feed, user }) {
             <img className=' w-8 h-8 rounded-full' src='/images/vjDp.JPG' alt='profileIcon' />
           </div>
           <div className='ml-3.5 flex flex-col'>
-            <span className='font-semibold	'>{feed.name}</span>
+            <span className='font-semibold	'>{feed.feed_user_name}</span>
             {Boolean(feed.place) && <span className='text-xs'>{feed.place}</span>}
           </div>
         </div>
       </div>
       <div>
-        <img className='w-full' src='api/image/insta-posts/image-1630172393385-51738551.jpg' alt='post' />
+        <img className='w-full' src={feed.post_photo_url} alt='post' />
       </div>
       <div>
         <div className='flex'>
           <div className='ml-4 py-3'>
-            {feed.likedBy.includes(user.id) ?
+            {feed.liked_by.includes(user.id) ?
               <svg aria-label="Unlike" className="_8-yf5 " fill="#ed4956" height="24" role="img" viewBox="0 0 48 48"
                 width="24"><path
                   d="M34.6 3.1c-4.5 0-7.9 1.8-10.6 5.6-2.7-3.7-6.1-5.5-10.6-5.5C6 3.1 0 9.6 0 17.6c0 7.3 5.4 12 10.6 16.5.6.5 1.3 1.1 1.9 1.7l2.3 2c4.4 3.9 6.6 5.9 7.6 6.5.5.3 1.1.5 1.6.5s1.1-.2 1.6-.5c1-.6 2.8-2.2 7.8-6.8l2-1.8c.7-.6 1.3-1.2 2-1.7C42.7 29.6 48 25 48 17.6c0-8-6-14.5-13.4-14.5z">
@@ -55,7 +54,7 @@ export default function Feed({ feed, user }) {
             }
           </div>
           <div className='ml-4 py-3'>
-            <svg aria-label="Comment" className="_8-yf5 " fill="#262626" height="24" role="img" viewBox="0 0 48 48" width="24"><path clip-rule="evenodd" d="M47.5 46.1l-2.8-11c1.8-3.3 2.8-7.1 2.8-11.1C47.5 11 37 .5 24 .5S.5 11 .5 24 11 47.5 24 47.5c4 0 7.8-1 11.1-2.8l11 2.8c.8.2 1.6-.6 1.4-1.4zm-3-22.1c0 4-1 7-2.6 10-.2.4-.3.9-.2 1.4l2.1 8.4-8.3-2.1c-.5-.1-1-.1-1.4.2-1.8 1-5.2 2.6-10 2.6-11.4 0-20.6-9.2-20.6-20.5S12.7 3.5 24 3.5 44.5 12.7 44.5 24z" fillRule="evenodd"></path></svg>
+            <svg aria-label="Comment" className="_8-yf5 " fill="#262626" height="24" role="img" viewBox="0 0 48 48" width="24"><path clipRule="evenodd" d="M47.5 46.1l-2.8-11c1.8-3.3 2.8-7.1 2.8-11.1C47.5 11 37 .5 24 .5S.5 11 .5 24 11 47.5 24 47.5c4 0 7.8-1 11.1-2.8l11 2.8c.8.2 1.6-.6 1.4-1.4zm-3-22.1c0 4-1 7-2.6 10-.2.4-.3.9-.2 1.4l2.1 8.4-8.3-2.1c-.5-.1-1-.1-1.4.2-1.8 1-5.2 2.6-10 2.6-11.4 0-20.6-9.2-20.6-20.5S12.7 3.5 24 3.5 44.5 12.7 44.5 24z" fillRule="evenodd"></path></svg>
           </div>
           <div className='ml-4 py-3'>
             <svg aria-label="Share Post" className="_8-yf5 " fill="#262626" height="24" role="img" viewBox="0 0 48 48" width="24"><path d="M47.8 3.8c-.3-.5-.8-.8-1.3-.8h-45C.9 3.1.3 3.5.1 4S0 5.2.4 5.7l15.9 15.6 5.5 22.6c.1.6.6 1 1.2 1.1h.2c.5 0 1-.3 1.3-.7l23.2-39c.4-.4.4-1 .1-1.5zM5.2 6.1h35.5L18 18.7 5.2 6.1zm18.7 33.6l-4.4-18.4L42.4 8.6 23.9 39.7z"></path></svg>
@@ -63,11 +62,12 @@ export default function Feed({ feed, user }) {
         </div>
       </div>
       <div className='ml-4'>
-        {Boolean(feed.likedBy.length) && <div className='mt-0 mb-2.5'> Liked by <span className='font-semibold'>{user.name}</span></div>}
-        <div className='mb-1'><span className='font-semibold'>{feed.name}</span> <span className='ml-2'> {feed.caption}</span></div>
-        {feed.comments.map(comment => <Comment key={comment.id} comment={comment} />)}
+        <div className='mt-0 mb-2.5'> Liked by <span className='font-semibold' onClick={getComments}>{feed.like_count}</span></div>
+        <div className='mb-1'><span className='font-semibold'>{feed.feed_user_name}</span> <span className='ml-2'> {feed.caption}</span></div>
+        {Boolean(feed.comment_count) && <div className='mb-1 text-gray-400'><span className=''> View all {feed.comment_count} comments</span></div>   }
+        {showComments && feed.comments.map(comment => <Comment key={comment.id} comment={comment} />)}
       </div>
-      <AddComment />
+      <AddComment getComments={getComments} feedId={feed.id} />
     </div >
   )
 }

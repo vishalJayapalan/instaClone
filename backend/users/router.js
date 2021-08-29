@@ -7,6 +7,6 @@ Router.post('/', registerUser);
 
 Router.post('/login', loginUser);
 
-Router.get('/getUser', auth, getCurrentUser);
+Router.get('/get-user', auth, getCurrentUser);
 
 module.exports = Router;
