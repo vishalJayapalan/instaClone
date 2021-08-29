@@ -20,7 +20,7 @@ const addLikeInDb = async (userId, feedId,) => {
 const getLikesFromDb = async feedId => {
   try {
     const likes = await pool.query(
-      `SELECT user_id FROM likes WHERE feed_id = $1 `,
+      `SELECT * FROM likes WHERE feed_id = $1 `,
       [feedId]
     )
     return { likes }
@@ -29,4 +29,21 @@ const getLikesFromDb = async feedId => {
   }
 }
 
-module.exports = { addLikeInDb, getLikesFromDb }
+const deleteLikeInDb = async (userId, feedId,) => {
+  try {
+    await pool.query(
+      `UPDATE feeds SET like_count = like_count-1 WHERE id = $1 RETURNING *`,
+     [  feedId]
+    )
+
+    const { rows } = await pool.query(
+      `DELETE FROM likes where feed_id=$2 and user_id=$1`,
+     [ userId, feedId]
+    )
+    return { newUser: rows }
+  } catch (error) {
+    return { error }
+  }
+}
+
+module.exports = { addLikeInDb, getLikesFromDb,deleteLikeInDb }

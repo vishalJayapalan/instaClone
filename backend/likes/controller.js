@@ -2,7 +2,8 @@ require('dotenv').config()
 
 const {
   addLikeInDb,
-  getLikesFromDb
+  getLikesFromDb,
+  deleteLikeInDb
 } = require('./model')
 
 const addLike = async (req, res, next) => {
@@ -20,11 +21,10 @@ const {feedId} = req.body
 
 const getLikes = async (req, res) => {
   const {feedId} = req.params
-  console.log(feedId)
   try {
     const { likes, error } = await getLikesFromDb(feedId)
     if (error) throw error
-    const likesResult = likes.row.map(like=> like.user_id)
+    const likesResult = likes.rows.map(like=> parseInt(like.user_id))
     return res.status(200).json(likesResult)
   } catch (err) {
     console.log(err)
@@ -32,4 +32,17 @@ const getLikes = async (req, res) => {
   }
 }
 
-module.exports = { addLike,getLikes }
+const deleteLike = async (req, res, next) => {
+  const {id} = req.user
+  const {feedId} = req.body
+    try {
+      const { deletedLike, error } = await deleteLikeInDb(id,feedId)
+      if (error) throw error
+    return res.status(200).json(deletedLike)
+    } catch (err) {
+      console.log(err)
+      return res.status(500).json({ message: "Couldnt like a  post" })
+    }
+  }
+
+module.exports = { addLike,getLikes,deleteLike }

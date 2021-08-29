@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect,useContext } from 'react'
 import Axios from 'axios'
 import { BASE_URL } from '../../config'
+import { UserContext } from '../context/UserContext';
 
 export default function AddPostModal({ setShowAddPostModal }) {
   const [image, setImage] = useState();
   const [caption, setCaption] = useState('');
-  
+  const {
+    getPosts
+  } = useContext(UserContext);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -21,6 +24,7 @@ export default function AddPostModal({ setShowAddPostModal }) {
         },
         data
       })
+      getPosts();
       setShowAddPostModal(false);
     } catch (err) {
       console.log(err)

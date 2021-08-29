@@ -9,7 +9,7 @@ export const UserContextProvider = props => {
   const [feeds,setFeeds] = useState([]);
   const [user,setUser] = useState({});
   const [comments,setComments] = useState([]);
-  const [likes,setLikes] = useState([])
+  // const [likes,setLikes] = useState([])
 
   useEffect(() => {
     getUser();
@@ -85,41 +85,62 @@ export const UserContextProvider = props => {
     }
   }
 
-  const getLikes = async (feed) => {
-    try {
-      const result = await Axios({
-        method: 'GET',
-        url: `/api/like/get-likes/${feed.id}`,
-        header: {
-          'Content-Type': 'application/json'
-        }
-      })
-      setLikes(result.data);
-    } catch (err) {
-      console.log(err)
-    }
-  }
+  // const getLikes = async (feed) => {
+  //   try {
+  //     const result = await Axios({
+  //       method: 'GET',
+  //       url: `/api/like/get-likes/${feed.id}`,
+  //       header: {
+  //         'Content-Type': 'application/json'
+  //       }
+  //     })
+  //     setLikes(result.data);
+  //   } catch (err) {
+  //     console.log(err)
+  //   }
+  // }
 
-  const addLike = async (feed)=>{
-    try {
-      const result = await Axios({
-        method: 'POST',
-        url: '/api/like/add-like',
-        header: {
-          'Content-Type': 'application/json'
-        },
-        data:{
-          feedId:feed.id
-        }
-      })
-      getPosts();
-      console.log('LIKES RESULT',result.data)
-      getLikes(feed)
-    }
-     catch (err) {
-      console.log(err)
-    }
-  }
+  // const addLike = async (feed)=>{
+  //   try {
+  //     const result = await Axios({
+  //       method: 'POST',
+  //       url: '/api/like/add-like',
+  //       header: {
+  //         'Content-Type': 'application/json'
+  //       },
+  //       data:{
+  //         feedId:feed.id
+  //       }
+  //     })
+  //     getPosts();
+  //     console.log('LIKES RESULT',result.data)
+  //     getLikes(feed)
+  //   }
+  //    catch (err) {
+  //     console.log(err)
+  //   }
+  // }
+
+  // const deleteLike = async (feed)=>{
+  //   try {
+  //     const result = await Axios({
+  //       method: 'DELETE',
+  //       url: '/api/like/delete-like',
+  //       header: {
+  //         'Content-Type': 'application/json'
+  //       },
+  //       data:{
+  //         feedId:feed.id
+  //       }
+  //     })
+  //     getPosts();
+  //     console.log('delete LIKES RESULT',result.data)
+  //     getLikes(feed)
+  //   }
+  //    catch (err) {
+  //     console.log(err)
+  //   }
+  // }
 
   return (
     <UserContext.Provider
@@ -133,8 +154,8 @@ export const UserContextProvider = props => {
         comments,
         getComments,
         addComment,
-        likes,
-        getLikes,addLike
+        // likes,
+        // getLikes,addLike,deleteLike
       }}
     >
       {props.children}

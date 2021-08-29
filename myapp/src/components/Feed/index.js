@@ -2,17 +2,75 @@ import React,{useState,useEffect,useContext} from 'react'
 import Comment from '../Comment'
 import AddComment from '../Comment/AddComment'
 import { UserContext } from '../context/UserContext';
+import Axios from 'axios'
 
 export default function Feed({ feed }) {
 const [showComments,setShowComments] = useState(false);
-const {
-  user,getComments,comments,likes,getLikes,addLike
+  const [likes,setLikes] = useState([])
+  const {
+  user,getComments,comments,getPosts
 } = useContext(UserContext);
+
+const getLikes = async (feed) => {
+  try {
+    const result = await Axios({
+      method: 'GET',
+      url: `/api/like/get-likes/${feed.id}`,
+      header: {
+        'Content-Type': 'application/json'
+      }
+    })
+    setLikes(result.data);
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+const addLike = async (feed)=>{
+  try {
+    const result = await Axios({
+      method: 'POST',
+      url: '/api/like/add-like',
+      header: {
+        'Content-Type': 'application/json'
+      },
+      data:{
+        feedId:feed.id
+      }
+    })
+    getPosts();
+    getLikes(feed)
+  }
+   catch (err) {
+    console.log(err)
+  }
+}
+
+const deleteLike = async (feed)=>{
+  try {
+    const result = await Axios({
+      method: 'DELETE',
+      url: '/api/like/delete-like',
+      header: {
+        'Content-Type': 'application/json'
+      },
+      data:{
+        feedId:feed.id
+      }
+    })
+    getPosts();
+    getLikes(feed)
+  }
+   catch (err) {
+    console.log(err)
+  }
+}
+
 useEffect(() => {
   if(feed.id)
   getLikes(feed)
 }, [feed])
-console.log('LIKES',likes)
+
 
   return (
     <div className="mt-5 border rounded-sm w-full">
@@ -33,8 +91,8 @@ console.log('LIKES',likes)
       <div>
         <div className='flex'>
           <div className='ml-4 py-3'>
-            {likes.includes(user.id) ?
-              <svg  aria-label="Unlike" className="_8-yf5 " fill="#ed4956" height="24" role="img" viewBox="0 0 48 48"
+            {likes.includes(parseInt(user.id)) ?
+              <svg  aria-label="Unlike" onClick={()=> deleteLike(feed)} className="_8-yf5 " fill="#ed4956" height="24" role="img" viewBox="0 0 48 48"
                 width="24"><path
                   d="M34.6 3.1c-4.5 0-7.9 1.8-10.6 5.6-2.7-3.7-6.1-5.5-10.6-5.5C6 3.1 0 9.6 0 17.6c0 7.3 5.4 12 10.6 16.5.6.5 1.3 1.1 1.9 1.7l2.3 2c4.4 3.9 6.6 5.9 7.6 6.5.5.3 1.1.5 1.6.5s1.1-.2 1.6-.5c1-.6 2.8-2.2 7.8-6.8l2-1.8c.7-.6 1.3-1.2 2-1.7C42.7 29.6 48 25 48 17.6c0-8-6-14.5-13.4-14.5z">
                 </path></svg> :
