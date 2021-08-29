@@ -1,33 +1,22 @@
-import React,{useState} from 'react'
+import React,{useState,useContext} from 'react'
 import Comment from '../Comment'
 import AddComment from '../Comment/AddComment'
 import Axios from 'axios'
+import { UserContext } from '../context/UserContext';
 
-export default function Feed({ feed, user }) {
-const [comments,setComments] = useState({});
+export default function Feed({ feed }) {
 const [showComments,setShowComments] = useState(false);
+const {
+  user,getComments,comments
+} = useContext(UserContext);
 
-  const getComments = async () => {
-    try {
-      const result = await Axios({
-        method: 'GET',
-        url: `/api/comment/get-comments/${feed.id}`,
-        header: {
-          'Content-Type': 'application/json'
-        }
-      })
-      setComments(result.data);
-    } catch (err) {
-      console.log(err)
-    }
-  }
 
   return (
     <div className="mt-5 border rounded-sm w-full">
       <div className='border-b w-full h-15 p-4'>
         <div className='w-2/6 flex'>
           <div className='overflow-hidden '>
-            <img className=' w-8 h-8 rounded-full' src='/images/vjDp.JPG' alt='profileIcon' />
+            <img className=' w-8 h-8 rounded-full' src='/images/default-avatar.png' alt='profileIcon' />
           </div>
           <div className='ml-3.5 flex flex-col'>
             <span className='font-semibold	'>{feed.feed_user_name}</span>
@@ -62,12 +51,15 @@ const [showComments,setShowComments] = useState(false);
         </div>
       </div>
       <div className='ml-4'>
-        <div className='mt-0 mb-2.5'> Liked by <span className='font-semibold' onClick={getComments}>{feed.like_count}</span></div>
+        <div className='mt-0 mb-2.5'> Liked by <span className='font-semibold'>{feed.like_count}</span></div>
         <div className='mb-1'><span className='font-semibold'>{feed.feed_user_name}</span> <span className='ml-2'> {feed.caption}</span></div>
-        {Boolean(feed.comment_count) && <div className='mb-1 text-gray-400'><span className=''> View all {feed.comment_count} comments</span></div>   }
-        {showComments && feed.comments.map(comment => <Comment key={comment.id} comment={comment} />)}
+        {Boolean(parseInt(feed.comment_count)) && <div className='mb-1 text-gray-400 cursor-pointer'  onClick={()=>{
+          getComments(feed)
+          setShowComments(true)
+          }}><span className=''> View all {feed.comment_count} comments</span></div>   }
+        {showComments && comments.map(comment => <Comment key={comment.id} comment={comment} />)}
       </div>
-      <AddComment getComments={getComments} feedId={feed.id} />
+      <AddComment  feed={feed} />
     </div >
   )
 }

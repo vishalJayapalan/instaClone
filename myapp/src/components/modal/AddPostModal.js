@@ -54,6 +54,7 @@ export default function AddPostModal({ setShowAddPostModal }) {
             </button>
             <button
               type="button"
+              onClick={() => setShowAddPostModal(false)}
               className="justify-center rounded-md  px-4 py-2 text-sm md:text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ms-3 sm:w-auto sm:text-sm">
               Cancel
             </button>

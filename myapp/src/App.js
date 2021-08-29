@@ -13,7 +13,7 @@ function App() {
           <Switch>
             <Route path='/login' exact component={Login} />
             <Route path='/' exact component={Signup} />
-            <PrivateRoute path='/home' exact component={Feeds} />
+            <Route path='/home' exact component={Feeds} />
           </Switch>
           </UserContextProvider>
       </Router>

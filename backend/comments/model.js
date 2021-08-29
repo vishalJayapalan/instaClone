@@ -3,7 +3,7 @@ const { pool } = require('../util/database')
 const addCommentInDb = async (userId, feedId, comment) => {
   try {
     await pool.query(
-      `UPDATE feeds SET comment_count = comment_count-1 WHERE feed_id = $1 RETURNING *`,
+      `UPDATE feeds SET comment_count = comment_count+1 WHERE id = $1 RETURNING *`,
      [  feedId]
     )
 
@@ -20,7 +20,8 @@ const addCommentInDb = async (userId, feedId, comment) => {
 const getCommentsFromDb = async feedId => {
   try {
     const comments = await pool.query(
-      `SELECT * FROM comments WHERE feed_id = $1`,
+      `SELECT c.*,u.user_name FROM comments c LEFT JOIN users AS u
+      ON c.user_id = u.id WHERE feed_id = $1 `,
       [feedId]
     )
     return { comments }

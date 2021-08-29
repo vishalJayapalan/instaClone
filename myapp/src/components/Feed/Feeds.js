@@ -1,47 +1,15 @@
-import React,{useState,useEffect} from 'react'
-import Axios from 'axios'
+import React,{useState,useEffect,useContext} from 'react'
 import Feed from './index'
 import Header from '../Header/index.js'
+import { UserContext } from '../context/UserContext';
 
 export default function Feeds() {
-  const [user,setUser] = useState({});
-  const [feeds,setFeeds] = useState([]);
-
-
-  const getPosts = async () => {
-    try {
-      const result = await Axios({
-        method: 'GET',
-        url: '/api/feed/get-feeds',
-        header: {
-          'Content-Type': 'application/json'
-        }
-      })
-      setFeeds(result.data);
-    } catch (err) {
-      console.log(err)
-    }
-  }
-
-  const getUser = async () => {
-    try {
-      const result = await Axios({
-        method: 'GET',
-        url: '/api/user/get-user',
-        header: {
-          'Content-Type': 'application/json'
-        }
-      })
-      setUser(result.data[0]);
-    } catch (err) {
-      console.log(err)
-    }
-  }
-
-  useEffect(() => {
-    getPosts()
-    getUser()
-  }, [])
+  // const [user,setUser] = useState({});
+  // const [feeds,setFeeds] = useState([]);
+  const {
+    user,
+    feeds,setFeeds
+  } = useContext(UserContext);
 
   return (
     <div className='text-sm'>

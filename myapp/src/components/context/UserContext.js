@@ -1,36 +1,86 @@
 import React, { createContext, useState, useEffect } from 'react'
+import Axios from 'axios'
 
 export const UserContext = createContext()
 
 export const UserContextProvider = props => {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [userDetails, setUserDetails] = useState(null)
-
+  const [feeds,setFeeds] = useState([]);
+  const [user,setUser] = useState({});
+const [comments,setComments] = useState([]);
+  
   useEffect(() => {
     getUser();
+    getPosts()
   }, [])
 
-  const request = async (params, method, body) => {
-    const data = await window.fetch('/' + params, {
-      method,
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(body)
-    })
-    return data
+  const getPosts = async () => {
+    try {
+      const result = await Axios({
+        method: 'GET',
+        url: '/api/feed/get-feeds',
+        header: {
+          'Content-Type': 'application/json'
+        }
+      })
+      setFeeds(result.data);
+    } catch (err) {
+      console.log(err)
+    }
   }
 
-  async function getUser () {
-    const data = await request('api/user/get-user', 'GET')
-    console.log(data)
-    if (data.ok) {
-      const jsonData = await data.json()
-      setUserDetails(jsonData[0])
-      setIsLoggedIn(jsonData[0].id)
-    } else {
-      console.log(data.status)
-      return false
+  const getUser = async () => {
+    try {
+      const result = await Axios({
+        method: 'GET',
+        url: '/api/user/get-user',
+        header: {
+          'Content-Type': 'application/json'
+        }
+      })
+      setUser(result.data[0]);
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  const getComments = async (feed) => {
+    try {
+      const result = await Axios({
+        method: 'GET',
+        url: `/api/comment/get-comments/${feed.id}`,
+        header: {
+          'Content-Type': 'application/json'
+        }
+      })
+      setComments(result.data.rows);
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  const addComment = async (comment,feed,setComment)=>{
+    try {
+      if(comment.length){
+      const result = await Axios({
+        method: 'POST',
+        url: '/api/comment/add-comment',
+        header: {
+          'Content-Type': 'application/json'
+        },
+        data:{
+          comment:comment,
+          feedId:feed.id
+        }
+      })
+      getPosts();
+      setComment('')
+      getComments(feed);
+    }
+    else{}}
+     catch (err) {
+      console.log(err)
     }
   }
 
@@ -39,7 +89,13 @@ export const UserContextProvider = props => {
       value={{
         isLoggedIn,
         userDetails,
-        setIsLoggedIn
+        setIsLoggedIn,
+        feeds,setFeeds,
+        user,setUser,
+        getPosts,getUser,
+        comments,
+        getComments,
+        addComment
       }}
     >
       {props.children}

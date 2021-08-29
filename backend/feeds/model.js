@@ -15,16 +15,6 @@ const createFeedPostinDb = async (userId, caption, postPhotoUrl) => {
 
 const getFeedsFromDb = async userId => {
   try {
-          // const feeds = await pool.query(
-          //   `SELECT f.*,c.comment,fu.user_name as feed_user_name, cu.user_name as comment_user_name
-          //   FROM 
-          //   feeds f 
-          //   LEFT JOIN comments AS c
-          //    ON c.post_id = f.id 
-          //    LEFT JOIN users AS fu
-          //     ON f.user_id = fu.id 
-          //     LEFT JOIN users cu 
-          //      ON c.user_id = cu.id`)
           const feeds = await pool.query(
             `SELECT f.*,u.user_name as feed_user_name
             FROM 
