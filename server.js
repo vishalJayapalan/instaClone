@@ -15,9 +15,9 @@ const likeRoutes = require('./likes/router');
 
 if (process.env.NODE_ENV === 'production') {
   // serve static content
-  app.use(express.static(path.join(__dirname, '..', 'myapp', 'build')))
+  app.use(express.static(path.join(__dirname , 'myapp', 'build')))
   app.get('*', (req, res) => {
-    const index = path.join(__dirname, '..', 'myapp', 'build', 'index.html')
+    const index = path.join(__dirname, 'myapp', 'build', 'index.html')
     res.sendFile(index)
   })
 }

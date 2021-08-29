@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "build":"cd myapp && npm run build",
     "start-dev": "nodemon server.js",
-    "herokhu-postbuild": "cd ../myapp && npm install && npm run build",
+    "herokhu-postbuild": "cd myapp && npm install && npm run build",
     "start": "node server.js"
   },
   "author": "",
