@@ -1,41 +1,52 @@
-import React,{useState} from 'react'
+import React, { useState, useEffect } from 'react'
 import Axios from 'axios'
 import { BASE_URL } from '../../config'
 
-export default function AddPostModal({setShowAddPostModal}) {
-  const fileInput = React.createRef();
-  const [caption,setCaption] = useState('');
-  
-  const handleSubmit = (event) =>{
-    event.preventDefault();
-    console.log(fileInput.current.files[0].name);
-    setShowAddPostModal(false);
-  }
-
-  const uploadFiles = async (event) => {
-    const files = Array.from(event.target.files)
-    const flLeng = files.length
-    if (!flLeng) return
-    if (flLeng < 10 )  {
-      const formData = new FormData()
-      for (const image of files) formData.append('images', image)
-      try {
-        const result = await Axios({
-          method: 'POST',
-          url: `${BASE_URL}/image/upload`,
-          header: {
-            'Content-Type': 'multipart/form-data'
-          },
-          data: formData,
-          onUploadProgress: (event) => console.log(Math.round((event.loaded / event.total) * 100))
-        })
-      } catch (err) {
-      }
+export default function AddPostModal({ setShowAddPostModal }) {
+  const [image, setImage] = useState();
+  const [caption, setCaption] = useState('');
+  const [imageUrl, setImageUrl] = useState('')
+  const getPosts = async () => {
+    try {
+      const result = await Axios({
+        method: 'GET',
+        url: '/api/image/insta-posts/image-1630172393385-51738551.jpg',
+        header: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+      console.log(result.data)
+      setImageUrl(result.data)
+    } catch (err) {
+      console.log(err)
     }
   }
+
+  useEffect(() => getPosts(), [])
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const data = new FormData()
+    data.append('caption', caption)
+    data.append('image', image)
+    try {
+      const result = await Axios({
+        method: 'POST',
+        url: '/api/image/upload',
+        header: {
+          'Content-Type': 'multipart/form-data'
+        },
+        data
+      })
+      console.log(result)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
   return (
     <div className="fixed z-40 w-full h-full inset-0 bg-gray-900 bg-opacity-80 transition-opacity flex items-center ">
-        <div className="z-50 bg-white w-full md:w-2/5 mx-2 min-h-96 md:mx-auto rounded-lg md:rounded-xl p-8">
+      <div className="z-50 bg-white w-full md:w-2/5 mx-2 min-h-96 md:mx-auto rounded-lg md:rounded-xl p-8">
         <div
           className="z-50 text-black relative flex justify-between"
         >
@@ -43,14 +54,16 @@ export default function AddPostModal({setShowAddPostModal}) {
           <img
             className="text-text-default cursor-pointer"
             src='icons/closeGray.svg' alt="close"
-            onClick={()=>setShowAddPostModal(false)}
+            onClick={() => setShowAddPostModal(false)}
           />
         </div>
-        <form className="mt-5" onSubmit={handleSubmit}>
-          {<div>
-            <input type='file' multiple accept="image/*" ref={fileInput} onChange={uploadFiles} />
+        <form className="mt-5 w-full" onSubmit={handleSubmit}>
+          {<div className='flex w-full justify-between'>
+            <label htmlFor='image'>Image:</label>
+            <input type='file' multiple accept="image/*" id="image" onChange={(e) => setImage(e.target.files[0])} />
           </div>}
-          <div className="pt-9 mx-auto flex flex-row-reverse justify-between items-center">
+          <textarea className="border w-full resize-none" placeholder='Enter a caption...' value={caption} onChange={(e) => setCaption(e.target.value)} />
+          <div className="pt-9 mx-auto w-3/6 flex flex-row-reverse justify-between items-center">
             <button
               type="submit"
               className="text-sm md:text-base bg-blueBtn text-white rounded-lg p-4 leading-4 font-medium focus:outline-none focus:ring-2 focus:ring-offset-2">
@@ -62,9 +75,9 @@ export default function AddPostModal({setShowAddPostModal}) {
               Cancel
             </button>
           </div>
-          <textarea className="border" value={caption} onChange={(e)=> setCaption(e.target.value)} />
         </form>
-        </div>
       </div>
+      {imageUrl && <img src={imageUrl} />}
+    </div>
   )
 }
