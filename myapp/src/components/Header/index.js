@@ -1,7 +1,12 @@
-import React from 'react'
+import React,{useState} from 'react'
+import AddPostModal from '../modal/AddPostModal.js'
 
-export default function Header({ setShowAddPostModal }) {
+export default function Header() {
+  const [showAddPostModal, setShowAddPostModal] = useState(false);
+
   return (
+    <>
+      {showAddPostModal && <AddPostModal setShowAddPostModal={setShowAddPostModal} />}
     <div className="sticky top-0 border bg-white">
       <div className="md:max-w-935px mx-auto flex justify-between items-center h-14 px-3">
         <img className="my-auto h-7 " alt='logo' src='/instaLogo.png' />
@@ -17,5 +22,6 @@ export default function Header({ setShowAddPostModal }) {
         </div>
       </div>
     </div>
+    </>
   )
 }

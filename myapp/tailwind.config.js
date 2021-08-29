@@ -16,7 +16,8 @@ module.exports = {
       },
       backgroundColor: (theme) => ({
         ...theme('colors'),
-        blueBtn: '#0095f6'
+        blueBtn: '#0095f6',
+        'while-signin': '#fff'
       })
     },
   },

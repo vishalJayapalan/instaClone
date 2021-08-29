@@ -1,15 +1,22 @@
-import React, { useState } from 'react';
-import Header from './components/Header/index.js'
-import AddPostModal from './components/modal/AddPostModal.js'
+import React from 'react';
 import Feeds from './components/Feed/Feeds.js';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import Signup from './components/user/Signup';
+import Login from './components/user/Login';
+import PrivateRoute from './PrivateRoute';
+import { UserContextProvider } from './components/context/UserContext'
+
 function App() {
-  const [showAddPostModal, setShowAddPostModal] = useState(false)
   return (
-    <div className='text-sm'>
-      {showAddPostModal && <AddPostModal setShowAddPostModal={setShowAddPostModal} />}
-      <Header setShowAddPostModal={setShowAddPostModal} />
-      <Feeds />
-    </div>
+    <Router>
+      <UserContextProvider>
+          <Switch>
+            <Route path='/login' exact component={Login} />
+            <Route path='/' exact component={Signup} />
+            <PrivateRoute path='/home' exact component={Feeds} />
+          </Switch>
+          </UserContextProvider>
+      </Router>
   );
 }
 
