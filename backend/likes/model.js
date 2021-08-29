@@ -8,7 +8,7 @@ const addLikeInDb = async (userId, feedId,) => {
     )
 
     const { rows } = await pool.query(
-      `INSERT INTO likes (user_id,feed_id) VALUES ($1,$2,$3) RETURNING *`,
+      `INSERT INTO likes (user_id,feed_id) VALUES ($1,$2) RETURNING *`,
      [ userId, feedId]
     )
     return { newUser: rows }
@@ -20,7 +20,7 @@ const addLikeInDb = async (userId, feedId,) => {
 const getLikesFromDb = async feedId => {
   try {
     const likes = await pool.query(
-      `SELECT * FROM likes WHERE feed_id = $1 `,
+      `SELECT user_id FROM likes WHERE feed_id = $1 `,
       [feedId]
     )
     return { likes }

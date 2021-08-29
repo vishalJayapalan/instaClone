@@ -8,11 +8,12 @@ export const UserContextProvider = props => {
   const [userDetails, setUserDetails] = useState(null)
   const [feeds,setFeeds] = useState([]);
   const [user,setUser] = useState({});
-const [comments,setComments] = useState([]);
-  
+  const [comments,setComments] = useState([]);
+  const [likes,setLikes] = useState([])
+
   useEffect(() => {
     getUser();
-    getPosts()
+    getPosts();
   }, [])
 
   const getPosts = async () => {
@@ -84,6 +85,42 @@ const [comments,setComments] = useState([]);
     }
   }
 
+  const getLikes = async (feed) => {
+    try {
+      const result = await Axios({
+        method: 'GET',
+        url: `/api/like/get-likes/${feed.id}`,
+        header: {
+          'Content-Type': 'application/json'
+        }
+      })
+      setLikes(result.data);
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  const addLike = async (feed)=>{
+    try {
+      const result = await Axios({
+        method: 'POST',
+        url: '/api/like/add-like',
+        header: {
+          'Content-Type': 'application/json'
+        },
+        data:{
+          feedId:feed.id
+        }
+      })
+      getPosts();
+      console.log('LIKES RESULT',result.data)
+      getLikes(feed)
+    }
+     catch (err) {
+      console.log(err)
+    }
+  }
+
   return (
     <UserContext.Provider
       value={{
@@ -95,7 +132,9 @@ const [comments,setComments] = useState([]);
         getPosts,getUser,
         comments,
         getComments,
-        addComment
+        addComment,
+        likes,
+        getLikes,addLike
       }}
     >
       {props.children}

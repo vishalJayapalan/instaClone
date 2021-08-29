@@ -20,10 +20,12 @@ const {feedId} = req.body
 
 const getLikes = async (req, res) => {
   const {feedId} = req.params
+  console.log(feedId)
   try {
     const { likes, error } = await getLikesFromDb(feedId)
     if (error) throw error
-    return res.status(200).json(likes)
+    const likesResult = likes.row.map(like=> like.user_id)
+    return res.status(200).json(likesResult)
   } catch (err) {
     console.log(err)
     return res.status(500).json({ message: "Some Database error" })
